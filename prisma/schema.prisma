@@ -1,0 +1,18 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model user_injury_reports {
+  report_id       Int       @id @default(autoincrement())
+  reporter_name   String    @db.VarChar(100)
+  injury_datetime DateTime  @db.Timestamp(6)
+  body_map        Json?
+  injury_details  Json?
+  report_date     DateTime? @default(now()) @db.Timestamp(6)
+}
