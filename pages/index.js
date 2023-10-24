@@ -1,7 +1,10 @@
 import { useUser } from "@auth0/nextjs-auth0/client";
+import { BodyPartsProvider } from "../BodyPartsContext";
+
+import { Button } from "antd";
 
 import HumanBodyMap from "./components/HumanBodyMap";
-import ThreeDModelViewer from "./components/3dhumanbody";
+import CircleDrawer from "./components/CircleDrawer";
 
 export default function Index() {
   const { user, error, isLoading } = useUser();
@@ -11,10 +14,28 @@ export default function Index() {
 
   if (user) {
     return (
-      <div>
-        Welcome {user.name}! <a href="/api/auth/logout">Logout</a>
-        <HumanBodyMap />
-      </div>
+      <BodyPartsProvider>
+        <div>
+          Welcome {user.name}! <a href="/api/auth/logout">Logout</a>
+          <Button type="primary">Primary Button</Button>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <HumanBodyMap />
+            <CircleDrawer
+              style={{
+                border: "2px solid red",
+                position: "absolute",
+                top: "0",
+              }}
+            />
+          </div>
+        </div>
+      </BodyPartsProvider>
     );
   }
 
