@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import ToggleMiniBox from "./toggleMiniBox.jsx";
 import { useBodyPartsContext } from "../../BodyPartsContext";
@@ -29,15 +30,15 @@ function HumanBodyMap() {
   return (
     <div
       style={{
+        width: 500,
+
+        height: 500,
         position: "absolute",
-        width: "500px",
-        height: "500px",
-        top: "0px",
-        left: "0px",
+        outline: "2px solid black",
       }}
     >
       <svg
-        viewBox="0 0 500 500"
+        viewbox="0 0 500 500"
         xmlns="http://www.w3.org/2000/svg"
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >
@@ -153,24 +154,6 @@ function HumanBodyMap() {
           <title>leftarm</title>
         </path>
       </svg>
-
-      {[
-        "head",
-        "chest",
-        "leftarm",
-        "rightarm",
-
-        "righthand",
-        "leftfeet",
-        "righ tarm",
-        "lefthand",
-        "rightfeet",
-      ].map(
-        (item) =>
-          console.log(item) && (
-            <ToggleMiniBox part={item} cursorPosition={cursorPosition} />
-          )
-      )}
     </div>
   );
 }

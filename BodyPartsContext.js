@@ -8,7 +8,7 @@ export const useBodyPartsContext = () => {
 
 const initialState = {
   head: { input1: "", input2: "", isclicked: false },
-  chest: { input1: "", input2: "", isclicked: true },
+  chest: { input1: "", input2: "", isclicked: false },
   leftarm: { input1: "", input2: "", isclicked: false },
   righthand: { input1: "", input2: "", isclicked: false },
   leftfeet: { input1: "", input2: "", isclicked: false },
@@ -34,15 +34,30 @@ const reducer = (state, action) => {
           [action.part.id]: updatedPart,
         };
       }
-      return state; // Part doesn't exist, return the current state
-    // Part doesn't exist, return the current state
+      return state;
+    case "UPDATE_PART":
+      if (state[action.part]) {
+        console.log("action.value", action.data.input2);
+        const updatedPart = {
+          ...state[action.part],
+          input1: action.data.input1,
+          input2: action.data.input2,
+        };
+
+        return {
+          ...state,
+          [action.part]: updatedPart,
+        };
+      }
+
+      return state;
+
     default:
       return state;
   }
 };
 
 export const BodyPartsProvider = ({ children }) => {
-  console.log("Context is wrapping components");
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (

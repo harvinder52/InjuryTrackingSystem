@@ -15,7 +15,6 @@ const ToggleMiniBox = (props) => {
   };
 
   const closeMiniBox = (input1, input2) => {
-    // Handle your submission logic here
     console.log("Submitted: Input1 -", input1, "Input2 -", input2);
     setMiniBoxVisible(false);
   };

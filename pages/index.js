@@ -5,6 +5,7 @@ import { Button } from "antd";
 
 import HumanBodyMap from "./components/HumanBodyMap";
 import CircleDrawer from "./components/CircleDrawer";
+import InjuryReportForm from "./components/InjuryReportForm";
 
 export default function Index() {
   const { user, error, isLoading } = useUser();
@@ -15,25 +16,16 @@ export default function Index() {
   if (user) {
     return (
       <BodyPartsProvider>
-        <div>
-          Welcome {user.name}! <a href="/api/auth/logout">Logout</a>
-          <Button type="primary">Primary Button</Button>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+        <div className="p-8">
+          <p className="text-2xl font-bold mb-4">Welcome {user.name}!</p>
+          <a
+            href="/api/auth/logout"
+            className="text-blue-500 underline hover:text-blue-700 inline-block mb-4"
           >
-            <HumanBodyMap />
-            <CircleDrawer
-              style={{
-                border: "2px solid red",
-                position: "absolute",
-                top: "0",
-              }}
-            />
-          </div>
+            Logout
+          </a>
+
+          <InjuryReportForm user={user.name} />
         </div>
       </BodyPartsProvider>
     );

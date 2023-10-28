@@ -1,13 +1,19 @@
 import React from "react";
 import { useBodyPartsContext } from "../../BodyPartsContext";
-import { Input, Button, Popover } from "antd";
 
 import { useState } from "react";
+import SimpleForm from "./SimpleForm";
 
-const CustomPopconfirm = ({ part, cursorPosition, content, onConfirm }) => {
-  const [visible, setVisible] = useState(true);
-
-  console.log(part);
+const CustomPopconfirm = ({
+  part,
+  setVisibility,
+  cursorPosition,
+  content,
+  visibility,
+  handleSubmit,
+}) => {
+  const [visible, setVisible] = useState(visibility || false);
+  console.log("Visbility", visibility, visible);
 
   const showPopconfirm = () => {
     setVisible(true);
@@ -17,8 +23,8 @@ const CustomPopconfirm = ({ part, cursorPosition, content, onConfirm }) => {
     setVisible(false);
   };
 
-  const handleConfirm = () => {
-    onConfirm(); // Call the provided callback function
+  const handleConfirm = (e) => {
+    handleSubmit(e);
     hidePopconfirm();
   };
 
@@ -30,7 +36,7 @@ const CustomPopconfirm = ({ part, cursorPosition, content, onConfirm }) => {
         left: `${cursorPosition.x}px`,
         top: `${cursorPosition.y}px`,
         width: "200px",
-        zIndex: "999",
+        zIndex: "9999",
       }}
     >
       {visible && (
@@ -43,17 +49,16 @@ const CustomPopconfirm = ({ part, cursorPosition, content, onConfirm }) => {
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
-          {content}
-          <Button
-            onClick={() => {
-              setVisible(false);
-            }}
-            type="dashed"
-          >
-            Save
-          </Button>
+          <div className="bg-white flex justify-end">
+            <button
+              onClick={hidePopconfirm}
+              className="text-white bg-red-500 border border-black border-opacity-25 p-2 rounded-md hover:bg-red-600"
+            >
+              X
+            </button>
+          </div>
 
-          <Button onClick={hidePopconfirm}>Cancel</Button>
+          {content}
         </div>
       )}
     </div>
@@ -62,53 +67,108 @@ const CustomPopconfirm = ({ part, cursorPosition, content, onConfirm }) => {
 
 const MiniBox = ({ part, cursorPosition }) => {
   const { state, dispatch } = useBodyPartsContext();
-  console.log("minibox ", part, cursorPosition);
+  const [inputText1, setInputText1] = useState("");
+  const [inputText2, setInputText2] = useState("");
+  const [visible, setVisible] = useState(true);
 
-  const input1 = state[part].input1;
-  const input2 = state[part].input2;
-  console.log("inputs", input1, input2);
+  const { input1, input2 } = state[part];
+  console.log(part);
 
-  const handleOk = () => {
+  const handleInputChange = (e, inputField) => {
+    const { value, id } = e.target; // Extract the value from the event
+    console.log("value is ", value, inputField, id);
+
+    id === "input1" ? setInputText1(value) : setInputText2(value);
+
+    console.log("InputTexts are", inputText1, inputText2);
+    console.log(
+      "InputTexts from state",
+      state[part].input1,
+      state[part].input2
+    );
+  };
+  const handleSubmit = (e, inputField) => {
+    e.preventDefault();
+
+    const { value, id } = e.target;
+    if (value == "") {
+      return;
+    }
+    id === "input1" ? setInputText1(value) : setInputText2(value);
+    console.log("Form submitted with data:", inputText1, inputText2);
+
     dispatch({
       type: "UPDATE_PART",
       part,
-      data: { input1, input2 },
+      data: {
+        input1: inputText1,
+        input2: inputText2,
+      },
     });
-    // Close the Popover if needed
+    console.log("dispatched", inputText1, inputText2);
+    setTimeout(() => {
+      setVisible(false); // Change the value to false after a delay
+    }, 500);
   };
 
   const customContent = (
-    <div>
-      <h1>{part}</h1>
-      <label htmlFor="input1">Label 1:</label>
-      <Input
-        type="text"
-        id="input1"
-        value={input1}
-        onChange={(e) => {
-          // Handle your input change logic here
-        }}
-      />
-      <br />
-      <label htmlFor="input2">Label 2:</label>
-      <Input
-        type="text"
-        id="input2"
-        value={input2}
-        onChange={(e) => {
-          // Handle your input change logic here
-        }}
-      />
+    <div className="max-w-md mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">{part}</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label
+            htmlFor="input1"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Input 1:
+          </label>
+          <input
+            type="text"
+            id="input1"
+            name="input1"
+            value={inputText1}
+            onChange={handleInputChange}
+            className="block w-full mt-1 p-2 border rounded-md focus:ring focus:ring-indigo-300"
+          />
+        </div>
+        <div className="mb-4">
+          <label
+            htmlFor="input2"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Input 2:
+          </label>
+          <input
+            type="text"
+            id="input2"
+            name="input2"
+            value={inputText2}
+            onChange={handleInputChange}
+            className="block w-full mt-1 p-2 border rounded-md focus:ring focus:ring-indigo-300"
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-500 text-white font-semibold p-2 rounded-md hover:bg-blue-600"
+        >
+          Submit
+        </button>
+      </form>
     </div>
   );
 
   return (
-    <div>
-      <CustomPopconfirm
-        content={customContent}
-        cursorPosition={cursorPosition}
-      />
-    </div>
+    visible && (
+      <div>
+        <CustomPopconfirm
+          content={customContent}
+          cursorPosition={cursorPosition}
+          handleSubmit={handleSubmit}
+          setVisibility={setVisible}
+          visibility={visible}
+        />
+      </div>
+    )
   );
 };
 

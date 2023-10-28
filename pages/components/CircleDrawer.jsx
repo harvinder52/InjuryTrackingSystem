@@ -1,8 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
+import ToggleMiniBox from "./toggleMiniBox";
 
 import { useBodyPartsContext } from "../../BodyPartsContext";
 function CircleDrawer() {
   const { state, dispatch } = useBodyPartsContext();
+  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
   const handlePartClick = (part) => {
     // Toggle the isclicked property for the clicked part
@@ -14,12 +16,20 @@ function CircleDrawer() {
   function findSvgPart(mouseX, mouseY) {
     const svgParts = document.querySelectorAll(".bodyPart");
 
+    console.log(mouseX, mouseY);
+
     svgParts.forEach((part) => {
+      const svg = document.querySelector("svg"); // Replace with your SVG element
+      const svgRect = svg.getBoundingClientRect(); // Get the SVG's position and dimensions
+
+      const scale = svgRect.width / 500;
       const partRect = part.getBoundingClientRect();
       const partX = partRect.left;
       const partY = partRect.top;
       const partWidth = partRect.width;
       const partHeight = partRect.height;
+
+      console.log(partX, partY);
 
       if (
         mouseX >= partX &&
@@ -27,7 +37,7 @@ function CircleDrawer() {
         mouseY >= partY &&
         mouseY <= partY + partHeight
       ) {
-        console.log(part);
+        console.log("svg parts cordinates", part.id, partX, partY);
         handlePartClick(part);
       }
     });
@@ -46,6 +56,7 @@ function CircleDrawer() {
 
     context.beginPath();
     context.moveTo(x1, y1);
+    console.log(x1, y1);
 
     setStartCoordinates({ x: x1, y: y1 });
   };
@@ -73,19 +84,16 @@ function CircleDrawer() {
 
   const stopPainting = () => {
     setIsDrawing(false);
-    console.log(startCoordinates.x, startCoordinates.y);
+    console.log(
+      "the cordinates sent are",
+      startCoordinates.x,
+      startCoordinates.y
+    );
     findSvgPart(startCoordinates.x, startCoordinates.y);
   };
 
   return (
-    <div
-      style={{
-        outline: "2px solid red",
-        position: "absolute",
-        top: "32px",
-        left: "0px", // Added to align with the SVG
-      }}
-    >
+    <div style={{ outline: "2px solid black", zIndex: "9999" }}>
       <canvas
         ref={canvasRef}
         width={500}
@@ -94,6 +102,24 @@ function CircleDrawer() {
         onMouseUpCapture={stopPainting}
         onMouseMoveCapture={drawCircle}
       />
+      {[
+        "head",
+        "chest",
+        "leftarm",
+        "rightarm",
+        "righthand",
+        "leftfeet",
+        "righarm",
+        "lefthand",
+        "rightfeet",
+        "leftleg",
+        "rightleg",
+      ].map(
+        (item) =>
+          state[item]?.isclicked && (
+            <ToggleMiniBox part={item} cursorPosition={startCoordinates} />
+          )
+      )}
     </div>
   );
 }
