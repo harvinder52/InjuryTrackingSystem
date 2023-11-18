@@ -6,6 +6,7 @@ import { Button } from "antd";
 import HumanBodyMap from "./components/HumanBodyMap";
 import CircleDrawer from "./components/CircleDrawer";
 import InjuryReportForm from "./components/InjuryReportForm";
+import ThreeDModelViewer from "./components/3dhumanbody";
 
 export default function Index() {
   const { user, error, isLoading } = useUser();
@@ -27,6 +28,8 @@ export default function Index() {
 
           <InjuryReportForm user={user.name} />
         </div>
+        <ThreeDModelViewer></ThreeDModelViewer>
+        <CircleDrawer />
       </BodyPartsProvider>
     );
   }

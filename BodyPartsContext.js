@@ -7,16 +7,16 @@ export const useBodyPartsContext = () => {
 };
 
 const initialState = {
-  head: { input1: "", input2: "", isclicked: false },
-  chest: { input1: "", input2: "", isclicked: false },
-  leftarm: { input1: "", input2: "", isclicked: false },
-  righthand: { input1: "", input2: "", isclicked: false },
-  leftfeet: { input1: "", input2: "", isclicked: false },
-  leftleg: { input1: "", input2: "", isclicked: false },
-  rightleg: { input1: "", input2: "", isclicked: false },
-  rightarm: { input1: "", input2: "", isclicked: false },
-  lefthand: { input1: "", input2: "", isclicked: false },
-  rightfeet: { input1: "", input2: "", isclicked: false },
+  head: { injury_details: "", isclicked: false },
+  chest: { injury_details: "", isclicked: false },
+  leftarm: { injury_details: "", isclicked: false },
+  righthand: { injury_details: "", isclicked: false },
+  leftfeet: { injury_details: "", isclicked: false },
+  leftleg: { injury_details: "", isclicked: false },
+  rightleg: { injury_details: "", isclicked: false },
+  rightarm: { injury_details: "", isclicked: false },
+  lefthand: { injury_details: "", isclicked: false },
+  rightfeet: { injury_details: "", isclicked: false },
 };
 const reducer = (state, action) => {
   switch (action.type) {
@@ -37,11 +37,10 @@ const reducer = (state, action) => {
       return state;
     case "UPDATE_PART":
       if (state[action.part]) {
-        console.log("action.value", action.data.input2);
+        console.log("action.value", action.data.injury_details);
         const updatedPart = {
           ...state[action.part],
-          input1: action.data.input1,
-          input2: action.data.input2,
+          injury_details: action.data.injury_details,
         };
 
         return {

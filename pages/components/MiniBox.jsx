@@ -49,15 +49,6 @@ const CustomPopconfirm = ({
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <div className="bg-white flex justify-end">
-            <button
-              onClick={hidePopconfirm}
-              className="text-white bg-red-500 border border-black border-opacity-25 p-2 rounded-md hover:bg-red-600"
-            >
-              X
-            </button>
-          </div>
-
           {content}
         </div>
       )}
@@ -67,82 +58,63 @@ const CustomPopconfirm = ({
 
 const MiniBox = ({ part, cursorPosition }) => {
   const { state, dispatch } = useBodyPartsContext();
-  const [inputText1, setInputText1] = useState("");
-  const [inputText2, setInputText2] = useState("");
   const [visible, setVisible] = useState(true);
 
-  const { input1, input2 } = state[part];
-  console.log(part);
+  const { injury_details } = state[part]; // Updated to use injury_details
 
   const handleInputChange = (e, inputField) => {
-    const { value, id } = e.target; // Extract the value from the event
-    console.log("value is ", value, inputField, id);
-
-    id === "input1" ? setInputText1(value) : setInputText2(value);
-
-    console.log("InputTexts are", inputText1, inputText2);
-    console.log(
-      "InputTexts from state",
-      state[part].input1,
-      state[part].input2
-    );
-  };
-  const handleSubmit = (e, inputField) => {
-    e.preventDefault();
-
-    const { value, id } = e.target;
-    if (value == "") {
-      return;
-    }
-    id === "input1" ? setInputText1(value) : setInputText2(value);
-    console.log("Form submitted with data:", inputText1, inputText2);
-
+    const { value } = e.target;
     dispatch({
       type: "UPDATE_PART",
       part,
       data: {
-        input1: inputText1,
-        input2: inputText2,
+        injury_details: value, // Updated to use injury_details
       },
     });
-    console.log("dispatched", inputText1, inputText2);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const { value, id } = e.target;
+    if (value === "") {
+      return;
+    }
+    dispatch({
+      type: "UPDATE_PART",
+      part,
+      data: {
+        injury_details: value, // Updated to use injury_details
+      },
+    });
     setTimeout(() => {
-      setVisible(false); // Change the value to false after a delay
+      setVisible(false);
     }, 500);
   };
 
   const customContent = (
-    <div className="max-w-md mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">{part}</h1>
+    <div className="max-w-md mx-auto ">
+      <h1 className="text-2xl flex justify-between font-bold mb-4">
+        {part}
+        <button
+          onClick={() => setVisible(false)}
+          className="text-white bg-red-500 h-8 w-8 border border-black border-opacity-25  rounded-lg hover:bg-red-600"
+        >
+          X
+        </button>
+      </h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label
-            htmlFor="input1"
+            htmlFor="injury_details" // Updated the label
             className="block text-sm font-medium text-gray-700"
           >
-            Input 1:
+            Injury Details:
           </label>
           <input
             type="text"
-            id="input1"
-            name="input1"
-            value={inputText1}
-            onChange={handleInputChange}
-            className="block w-full mt-1 p-2 border rounded-md focus:ring focus:ring-indigo-300"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="input2"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Input 2:
-          </label>
-          <input
-            type="text"
-            id="input2"
-            name="input2"
-            value={inputText2}
+            id="injury_details" // Updated the id
+            name="injury_details" // Updated the name
+            value={injury_details} // Updated to use injury_details
             onChange={handleInputChange}
             className="block w-full mt-1 p-2 border rounded-md focus:ring focus:ring-indigo-300"
           />

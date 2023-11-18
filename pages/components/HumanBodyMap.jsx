@@ -1,12 +1,37 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ToggleMiniBox from "./toggleMiniBox.jsx";
 import { useBodyPartsContext } from "../../BodyPartsContext";
 
 function HumanBodyMap() {
   const [isClicked, setIsClicked] = useState({});
+  const [windowSize, setWindowSize] = useState({
+    width: 0,
+    height: 0,
+  });
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const { state } = useBodyPartsContext();
+
+  useEffect(() => {
+    // Function to update window size in state
+    const updateWindowSize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    // Initial window size update
+    updateWindowSize();
+
+    // Event listener for window resize
+    window.addEventListener("resize", updateWindowSize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", updateWindowSize);
+    };
+  }, []);
 
   console.log(state.chest.isclicked);
 

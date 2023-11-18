@@ -94,6 +94,14 @@ function CircleDrawer() {
 
   return (
     <div style={{ outline: "2px solid black", zIndex: "9999" }}>
+      <button
+        style={{ position: "absolute", top: "0" }}
+        onClick={() => {
+          window.location.reload();
+        }}
+      >
+        Refresh
+      </button>
       <canvas
         ref={canvasRef}
         width={500}
